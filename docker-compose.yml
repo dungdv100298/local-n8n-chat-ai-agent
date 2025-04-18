@@ -7,7 +7,7 @@ services:
     ports:
       - "5678:5678"
     environment:
-      - N8N_HOST=n8n
+      - N8N_HOST=localhost
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
       - NODE_ENV=production
@@ -46,7 +46,6 @@ services:
       - POSTGRES_DB=n8n
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql
     networks:
       - ai-chatbot-network
 

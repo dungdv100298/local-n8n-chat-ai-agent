@@ -1,0 +1,154 @@
+{
+  "name": "Add Documents",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Add Documents",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "File",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2c67e5af-4559-4ac5-8b91-00389fd854dc",
+      "name": "On form submission",
+      "webhookId": "f79f0a8f-9220-4c41-a2d5-9d617609b242"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "96bc358b-92bd-4168-86eb-56f580a3f5bb",
+      "name": "Postgres PGVector Store",
+      "credentials": {
+        "postgres": {
+          "id": "AabwOK5VJt4y0SI7",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        160,
+        200
+      ],
+      "id": "41aff321-ec5c-4a88-836f-06cef4d9936d",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xu5GnkUqLDp2rfxr",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        360,
+        220
+      ],
+      "id": "bb0a95db-7d99-48dd-a48c-0e55f60e28f8",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        460,
+        440
+      ],
+      "id": "7c81d1e2-a9d5-4a6c-a8a7-39ac07ee54bd",
+      "name": "Recursive Character Text Splitter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9c9957cc-c8b9-4d97-beab-75e565bb7720",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c41cf144855423801ac2b9596e95c27bf06da851416bb1fd4f196f977cf05297"
+  },
+  "id": "2ErqJEwSJpqOOmnm",
+  "tags": []
+}
